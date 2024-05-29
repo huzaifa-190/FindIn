@@ -32,11 +32,11 @@ import {
 
 import Loader from "../../Components/Loader";
 import colors from "../../Constants/Colors";
+import FoundItemsCustomList from "../../Components/FoundItemsCustomList";
 import { useAuth } from "../../Contexts/AuthContext";
 import { useItems } from "../../Contexts/ItemsContext";
 import { fetchItems } from "../../Hooks/FireStoreHooks/FireStoreHooks";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-
 
 // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& FUNCTIONS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 const Item = (item, navigation) => (
@@ -49,8 +49,13 @@ const Item = (item, navigation) => (
       style={styles.itemImage}
       source={require("./../../../assets/images/i1.jpg")}
     /> */}
-    
-    {item.images ? <Image source={{ uri: item.images.filter((image)=>(!image==''))[0] }} style={styles.itemImage} />:null}
+
+    {item.images ? (
+      <Image
+        source={{ uri: item.images.filter((image) => !image == "")[0] }}
+        style={styles.itemImage}
+      />
+    ) : null}
     <View
       style={{
         flex: 1,
@@ -87,16 +92,13 @@ const Item = (item, navigation) => (
 );
 
 export default function Home({ navigation }) {
-
-
   const { user } = useAuth();
   const { items, setItems } = useItems();
-  let lostItems ,foundItems
-  if(items){
-     lostItems = items.filter((item) =>(item.status =='lost'))
-     foundItems = items.filter((item) =>(item.status =='found'))
+  let lostItems, foundItems;
+  if (items) {
+    lostItems = items.filter((item) => item.status == "lost");
+    foundItems = items.filter((item) => item.status == "found");
   }
-
 
   useEffect(() => {
     console.log("useeffect of HOME [] \n");
@@ -200,14 +202,26 @@ export default function Home({ navigation }) {
         </View>
 
         <View style={{ flex: 0.85 }}>
-          <FlatList
+          {/* <FlatList
             // data={DATA}
             data={foundItems}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => Item(item, navigation)}
-          />
+          /> */}
+
+          {/* Here I used my own custom built flatlist using scroll view  */}
+
+          <ScrollView
+            contentContainerStyle={{}}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {foundItems.map((item) => (
+              <FoundItemsCustomList item={item} navigation={navigation} />
+            ))}
+          </ScrollView>
         </View>
       </View>
 
@@ -230,8 +244,9 @@ export default function Home({ navigation }) {
           >
             Lost Items
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("LostItems", { data: items })}
->
+          <TouchableOpacity
+            onPress={() => navigation.navigate("LostItems", { data: items })}
+          >
             <Text style={{ color: colors.skyBlue }}>see all (47)</Text>
           </TouchableOpacity>
         </View>

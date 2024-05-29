@@ -30,7 +30,7 @@ import {
   updateDoc,
   query,
   where,
-  serverTimestamp
+  serverTimestamp,
 } from "firebase/firestore";
 // import { getStorage } from 'firebase/storage';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -44,8 +44,7 @@ import SubmitButton from "../../Components/SubmitButton";
 import DropDown from "../../Components/DropDown";
 import PickImageButton from "../../Components/PickImageButton";
 import { useAuth } from "../../Contexts/AuthContext";
-import Loader from '../../Components/Loader';
-
+import Loader from "../../Components/Loader";
 
 const categories = [
   { label: "Phone", value: "Phone" },
@@ -76,8 +75,8 @@ const Add = () => {
   const [isPosting, setIsPosting] = useState(false);
 
   const [locationFrom, setLocationFrom] = useState(null);
-  const [color,setColor] = useState('');
-  const [brand,setBrand] = useState('');
+  const [color, setColor] = useState("");
+  const [brand, setBrand] = useState("");
 
   // Function to pick image from device
   const pickImage = async (imageNo) => {
@@ -111,18 +110,15 @@ const Add = () => {
 
     setIsPosting(true);
 
-    try{
-
+    try {
       const snapshot = await uploadBytes(storageRef, blob);
       const url = await getDownloadURL(snapshot.ref);
       console.log("\n\n\t\timage URL returned ==>", url.trim());
-      
+
       return url.trim();
-    }
-    catch(error){
+    } catch (error) {
       console.log(new Error(error));
     }
-
   };
 
   const onSubmit = async () => {
@@ -136,44 +132,37 @@ const Add = () => {
           });
         }
 
-        let urls = ['','',''] 
+        let urls = ["", "", ""];
         if (image1) {
           urls[0] = await uploadImage(image1, setImage1URL);
         }
-      
+
         if (image2) {
           urls[1] = await uploadImage(image2, setImage2URL);
         }
-     
+
         if (image3) {
           urls[2] = await uploadImage(image3, setImage3URL);
         }
-      
 
-   
         const itemData = {
           title: title,
           category: category,
           status: selectedPostType,
-          color:color,
-          brand:brand,
+          color: color,
+          brand: brand,
           desc: desc,
           // createdAt: serverTimestamp(),
           email: user.email,
-          images:[  
-            urls[0],
-            urls[1],
-            urls[2]
-          ]
-        }
-  
+          images: [urls[0], urls[1], urls[2]],
+        };
 
         const dbfs = getFirestore();
         const snapShot = collection(dbfs, "Items");
         // const q = query(snapShot)
-        await addDoc(snapShot,itemData );
+        await addDoc(snapShot, itemData);
         // await addDoc(collection(db, 'items'), itemData);
-        
+
         setImage1(null);
         setImage2(null);
         setImage3(null);
@@ -181,8 +170,8 @@ const Add = () => {
         setCategory("");
         setDesc("");
         setSelectedPostType("");
-        setColor('')
-        setBrand('')
+        setColor("");
+        setBrand("");
         Toast.show({ type: "success", text1: "Item Posted " });
         setIsPosting(false);
       } catch (err) {
@@ -194,14 +183,14 @@ const Add = () => {
     await setItem();
   };
 
-  if(isPosting){
+  if (isPosting) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Loader />
       </View>
     );
   }
-
+  //                                                                Main RETURN OF COMPONENT
   return (
     <ScrollView style={{ opacity: isPosting ? 0.4 : 1 }}>
       {/* <StatusBar style='light' backgroundColor='black'/> */}
@@ -219,18 +208,17 @@ const Add = () => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-evenly",
+              // justifyContent: "space-evenly",
               marginVertical: 10,
             }}
           >
             <PickImageButton image={image1} onPress={() => pickImage(1)} />
-            {image1 != null ? 
+            {image1 != null ? (
               <PickImageButton image={image2} onPress={() => pickImage(2)} />
-            :null}
-            {image1 && image2 != null ? 
+            ) : null}
+            {image1 && image2 != null ? (
               <PickImageButton image={image3} onPress={() => pickImage(3)} />
-            :null}
-
+            ) : null}
           </View>
         </View>
 

@@ -165,7 +165,7 @@ export default function Profile({navigation}) {
           </TouchableOpacity>
           <Text style={{fontSize:24,fontWeight:'bold',color:colors.white}}>{user?user.username.charAt(0).toUpperCase()+user.username.slice(1).toLowerCase():null}</Text>
           <Text style={styles.emailText}>{user?user.email:null }</Text>
-          <Text style={styles.emailText}>Password : {userLoginPassword}</Text>
+          {/* <Text style={styles.emailText}>Password : {userLoginPassword}</Text> */}
 
           <TouchableOpacity style={{backgroundColor:colors.yellow,alignItems:'center',justifyContent:'center',
           height:35,width:120,borderRadius:20}} onPress={()=>(uploadImage(dp))}>
@@ -239,29 +239,7 @@ export default function Profile({navigation}) {
            onProceed={()=>(onDone())} isinput={true} isInpSecure={true} inpLabel={' New password'}
             inpValue={newPassword} onInpChange={(text)=>(setNewPassword(text))}
             proceedLabel={'Done'} title={'Enter new password'} />
-
-        {/* <Modal isVisible={isModalVisible} animationIn={'fadeInUpBig'} animationOut={'bounceOut'}  animationInTiming={200}
-        onBackdropPress={()=>(cancelPassModal())}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Verify</Text>
-
-            <InputField label={'Previous password'} isSecureTextEntry={true} value={password} onChangeText={(text)=>(setPassword(text))}/>
-
-            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:20}}>
-
-
-            <TouchableOpacity style={styles.btn} onPress={()=>(cancelPassModal())}>
-              <Text style={{color:colors.darkestBlue}}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.btn} onPress={()=>(onProceed())} >
-              <Text style={{color:colors.green}}>proceed</Text>
-            </TouchableOpacity>
-            </View>
-         
-          </View>
-        </Modal> */}
-
+        
     </ScrollView>
 
   )

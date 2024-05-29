@@ -8,7 +8,7 @@ import Colors from '../Constants/Colors';
 export default function PickImageButton({image,onPress,dis,}) {
   return (
     <TouchableOpacity style={{
-      borderRadius:20,height:90,width:90,backgroundColor:dis ?  Colors.lightPurple : 'red',
+      borderRadius:20,height:90,width:90,backgroundColor: Colors.lightPurple ,marginRight:12,
       alignItems:'center',justifyContent:'center',opacity: dis ? 0.3 :1,
     }} disabled={dis} onPress={onPress}>
       

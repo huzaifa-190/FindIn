@@ -9,13 +9,13 @@ import {requestForegroundPermissionsAsync,getCurrentPositionAsync} from 'expo-lo
 export default function MapTab() {
   const [Latitude,setLatitude] = useState(null)
   const [Longitude,setLongitude] = useState(null)
-  const [userCurrentLocation,setUserCurrentLocation] = useState({})
-  // const [userCurrentLocation,setUserCurrentLocation] = useState({
-  //   latitude: 32.78825,
-  //   longitude: -89.4324,
-  //   latitudeDelta: 0.0922,
-  //   longitudeDelta: 0.0421,
-  // })
+  // const [userCurrentLocation,setUserCurrentLocation] = useState({})
+  const [userCurrentLocation,setUserCurrentLocation] = useState({
+    latitude: 31.403,
+    longitude: 74.2106,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  })
   const [err,setErr] =useState(null)
 
   const startWatching = async () => {
@@ -65,7 +65,27 @@ export default function MapTab() {
           </Marker>
         </MapView>
       }  */}
-      <Text>This is map</Text>
+      {err ? <Text>Error loading map</Text> : 
+       <MapView
+        initialRegion={{
+          latitude: userCurrentLocation.latitude,
+          longitude: userCurrentLocation.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        
+        
+        style={{height: '100%', width: '100%',}}
+        >
+          <Marker title='You' coordinate={{
+             latitude: userCurrentLocation.latitude,
+             longitude: userCurrentLocation.longitude
+          }} >
+
+          </Marker>
+        </MapView>
+      } 
+      {/* <Text>This is map</Text> */}
     </View>
   )
 }

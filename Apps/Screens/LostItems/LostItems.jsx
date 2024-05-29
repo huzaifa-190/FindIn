@@ -178,33 +178,7 @@ export default function FoundItems({ navigation, route }) {
           onBackPress={() => navigation.pop()}
         />
       </View>
-      {/* <View style={{flex:0.3 }}>
-            <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center'}} onPress={() => navigation.pop()}>
-                <Ionicons name="chevron-back" size={24} color={colors.yellow} />
-                <Text style={{color:colors.darkGrey}}>Home</Text>
-            </TouchableOpacity>
-        </View>
-
-
-        <View style={{flex:0.7}}>
-            <View style={{flex:1,flexDirection:'row',alignItems:'center',borderWidth:0.5,borderColor:colors.grey,
-            paddingVertical:8,paddingHorizontal:10,borderRadius:6,backgroundColor:colors.white,marginVertical:12}}>
-            
-                <View style={{flex:0.1}}>
-                    <Fontisto name="search" size={16} color='grey'/> 
-                </View>
-                <View style={{flex:0.8}}>
-                    <TextInput  placeholder="Find items" >
-                    </TextInput>
-                </View>
-                <View style={{flex:0.1}}>
-                    <TouchableOpacity>
-                    <Ionicons name="options-outline" size={20} color="grey" style={{transform: [{ rotate: '270deg' }]}} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-    
-        </View> */}
+     
 
       {/* mid container for heading and categories */}
 
