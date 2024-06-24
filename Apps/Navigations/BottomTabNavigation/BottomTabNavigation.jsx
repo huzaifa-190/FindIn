@@ -31,7 +31,7 @@ const Tab = createMaterialBottomTabNavigator();
 const styles = StyleSheet.create({
     tabBarContainer: {
         borderTopLeftRadius:27,borderTopRightRadius:27,
-        backgroundColor:colors.purple,alignItems:'center',
+        backgroundColor:colors.powderBlue,alignItems:'center',
         justifyContent:'space-between',paddingHorizontal:22,paddingVertical:0,
         // borderWidth: 0.5,
         // borderColor: Colors.yellow,
@@ -73,9 +73,9 @@ const homeOptions ={
     title: ()=>(
         <Text style={{color:Colors.purple,fontSize:14,marginBottom:2}}>Home</Text>
     ),
-    tabBarIcon: ({color})=>(
+    tabBarIcon: ({color,isActive})=>(
         
-        <AntDesign name="home" size={22} color={Colors.white} />
+        <AntDesign name="home" size={22} color={ isActive ? Colors.purple : colors.white} />
     ),
 }
 

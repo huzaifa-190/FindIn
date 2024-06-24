@@ -1,7 +1,7 @@
 import { View, Text ,Dimensions,Image,StyleSheet,Platform,NativeModules,ScrollView, TouchableOpacity} from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react'
-const { StatusBarManager } = NativeModules;
+    const { StatusBarManager } = NativeModules;
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
@@ -63,7 +63,7 @@ export default function ItemDetail({route,navigation}) {
                         <Text style={{marginLeft:5,fontSize:14,color:Colors.grey,fontWeight:'500'}}>Cui cafe</Text>
                     </View>
 
-                    <Text style={{marginVertical:10,fontSize:16,color:Colors.darkestBlue}}>{item.email}</Text>
+                    <Text style={{marginVertical:10,fontSize:16,color:Colors.darkestBlue}}>Posted by : {item.email}</Text>
                     <Text style={styles.heading}>Additional Information</Text>
                     <View style={styles.infoBox}>
                         <Text style={styles.infoText}>Color                 Black

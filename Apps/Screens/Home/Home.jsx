@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
+  NativeModules,
+  Dimensions,
   Platform,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
+const { StatusBarManager } = NativeModules;
 import { ScrollView } from "react-native-gesture-handler";
 import { Fontisto } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -35,11 +38,11 @@ import colors from "../../Constants/Colors";
 import FoundItemsCustomList from "../../Components/FoundItemsCustomList";
 import { useAuth } from "../../Contexts/AuthContext";
 import { useItems } from "../../Contexts/ItemsContext";
-import { fetchItems } from "../../Hooks/FireStoreHooks/FireStoreHooks";
+import { fetchItems , fetchCategories } from "../../Hooks/FireStoreHooks/FireStoreHooks";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
 // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& FUNCTIONS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-const Item = (item, navigation) => (
+const Item = (item, navigation) =>  (
   // <View style={styles.item}>
   <TouchableOpacity
     style={styles.item}
@@ -91,22 +94,33 @@ const Item = (item, navigation) => (
   // {/* </View> */}
 );
 
+
 export default function Home({ navigation }) {
   const { user } = useAuth();
-  const { items, setItems } = useItems();
+  const { items, setItems ,categories,setCategories} = useItems();
   let lostItems, foundItems;
+  const [search, setSearch] = useState("");
   if (items) {
-    lostItems = items.filter((item) => item.status == "lost");
-    foundItems = items.filter((item) => item.status == "found");
+    lostItems = items.filter((item) => item.status == "lost" && item.title.toLowerCase().includes(search.toLowerCase()));
+    foundItems = items.filter((item) => item.status == "found" && item.title.toLowerCase().includes(search.toLowerCase()));
+    // const filteredItems = items.filter((item) =>
+    //   item.category.toLowerCase().includes(search.toLowerCase())
+    //   );
   }
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const width = Dimensions.get('window').width;
+
 
   useEffect(() => {
     console.log("useeffect of HOME [] \n");
     fetchItems("Items", setItems); // fetching items from Items collection and seting items in ItemsContext
+    fetchCategories("Categories", setCategories); // fetching categories from Categories collection and seting categories in ItemsContext
 
     // console.log("items now ==> ", items);
   }, []);
 
+  
+ 
   if (!items) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -115,19 +129,22 @@ export default function Home({ navigation }) {
     );
   }
   return (
-    // <KeyboardAwareScrollView keyboardShouldPersistTaps="never" contentContainerStyle={{flex:1,flexGrow:1,backgroundColor:colors.lightbg,flexDirection:'column'
-    // ,justifyContent:'flex-start',paddingTop:"13%",}} >
-    // {/* <ScrollView contentContainerStyle={{backgroundColor:colors}}>  */}
+    <KeyboardAwareScrollView keyboardShouldPersistTaps="never" contentContainerStyle={{flexGrow:1,backgroundColor:colors.lightbg,flexDirection:'column'
+    ,justifyContent:'flex-start',paddingTop:"13%",}} >
+    
+    {/* <ScrollView contentContainerStyle={{flex:1,flexDirection: "column",
+      justifyContent: "flex-start", backgroundColor:colors.lightbg,paddingTop:STATUSBAR_HEIGHT + 30}}>  
+ */}
 
     <View
       style={{
         flex: 1,
-        backgroundColor: colors.lightbg,
+        // backgroundColor: colors.lightbg,
         flexDirection: "column",
         justifyContent: "flex-start",
-        paddingTop: "13%",
       }}
     >
+
       <StatusBar style="dark" backgroundColor={colors.lightbg} />
       {/* <SafeAreaView> */}
 
@@ -160,7 +177,7 @@ export default function Home({ navigation }) {
             <Fontisto name="search" size={18} color="grey" />
           </View>
           <View style={{ flex: 0.8 }}>
-            <TextInput placeholder="Find items"></TextInput>
+            <TextInput placeholder="Search items by title" onChangeText={(search)=> setSearch(search)}></TextInput>
           </View>
           <View style={{ flex: 0.1 }}>
             <TouchableOpacity>
@@ -195,9 +212,9 @@ export default function Home({ navigation }) {
             Found Items
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("FoundItems", { data: items })}
+            onPress={() => navigation.navigate("FoundItems", { data: items ,type:'found'} , )}
           >
-            <Text style={{ color: colors.skyBlue }}>see all (101)</Text>
+            <Text style={{ color: colors.skyBlue }}>see all ({foundItems.length})</Text>
           </TouchableOpacity>
         </View>
 
@@ -245,9 +262,9 @@ export default function Home({ navigation }) {
             Lost Items
           </Text>
           <TouchableOpacity
-            onPress={() => navigation.navigate("LostItems", { data: items })}
+            onPress={() => navigation.navigate("LostItems", { data: items ,type:'lost'})}
           >
-            <Text style={{ color: colors.skyBlue }}>see all (47)</Text>
+            <Text style={{ color: colors.skyBlue }}>see all ({lostItems.length})</Text>
           </TouchableOpacity>
         </View>
 
@@ -262,11 +279,12 @@ export default function Home({ navigation }) {
         </View>
       </View>
 
-      {/* </SafeAreaView> */}
     </View>
-    // </ScrollView>
 
-    // {/* </KeyboardAwareScrollView> */}
+     {/* </ScrollView> */}
+
+     </KeyboardAwareScrollView>  
+
   );
 }
 

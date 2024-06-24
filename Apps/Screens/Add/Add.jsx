@@ -47,12 +47,12 @@ import { useAuth } from "../../Contexts/AuthContext";
 import Loader from "../../Components/Loader";
 
 const categories = [
-  { label: "Phone", value: "Phone" },
-  { label: "Watch", value: "Watch" },
-  { label: "Keys", value: "Key" },
-  { label: "wallet", value: "wallet" },
-  { label: "chain", value: "chain" },
-  { label: "other", value: "other" },
+  { label: "Phone", value: "Phones" },
+  { label: "Watch", value: "Watches" },
+  { label: "Keys", value: "Keys" },
+  { label: "wallet", value: "wallets" },
+  { label: "chain", value: "chains" },
+  { label: "other", value: "others" },
 ];
 const locationCategories = [
   { label: "Use current location", value: "curent" },
@@ -69,6 +69,7 @@ const Add = () => {
   const [image2URL, setImage2URL] = useState("");
   const [image3URL, setImage3URL] = useState("");
   const [category, setCategory] = useState();
+  const [locationPref,setLocationPref] = useState()
   const [title, setTitle] = useState();
   const [desc, setDesc] = useState();
   const [selectedPostType, setSelectedPostType] = useState(null);
@@ -155,6 +156,7 @@ const Add = () => {
           // createdAt: serverTimestamp(),
           email: user.email,
           images: [urls[0], urls[1], urls[2]],
+          // createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         };
 
         const dbfs = getFirestore();
@@ -194,8 +196,16 @@ const Add = () => {
   return (
     <ScrollView style={{ opacity: isPosting ? 0.4 : 1 }}>
       {/* <StatusBar style='light' backgroundColor='black'/> */}
-      <View style={styles.container} keyboardShouldPersistTaps="never">
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Create ad +</Text>
+      <View style={styles.container}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            color: colors.darkestBlue,
+          }}
+        >
+          Create ad +
+        </Text>
 
         {/* View container for images block   */}
         <View style={{ marginVertical: 10 }}>
@@ -313,7 +323,10 @@ const Add = () => {
                 size={24}
                 color="black"
               />
-            )}
+              )}
+                onChange={(item) => {
+                  setLocationPref(item.value);
+                }}
           />
         </View>
 
@@ -371,6 +384,7 @@ const styles = StyleSheet.create({
     borderColor: colors.purple,
   },
   label: {
+    color: colors.darkestBlue,
     fontSize: 16,
     fontWeight: "bold",
     marginTop: "5%",

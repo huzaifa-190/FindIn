@@ -12,67 +12,20 @@ import {
   NativeModules,
 } from "react-native";
 import React, { useState } from "react";
+import LottieView from "lottie-react-native";
 import { StatusBar } from "expo-status-bar";
 const { StatusBarManager } = NativeModules;
 
 // import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
-import { Fontisto } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { ScrollView } from "react-native-gesture-handler";
-
+//   IMpoting own components
 import colors from "../../Constants/Colors";
 import HeaderReturn from "../../Components/HeaderReturn";
+// import Loader from "../../Components/Loader";
 import { useItems } from "../../Contexts/ItemsContext";
 
-// import Animated from 'react-native-reanimated';
-
-const DATA = [
-  {
-    id: 1,
-    title: "All ",
-  },
-  {
-    id: 2,
-    title: "Phone",
-  },
-  {
-    id: 3,
-    title: "bag",
-  },
-  {
-    id: 4,
-    title: "wallet",
-  },
-  {
-    id: 5,
-    title: "keys",
-  },
-  {
-    id: 6,
-    title: "chain",
-  },
-];
 
 // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& FUNCTIONS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-const CategoriesList = (item) => (
-  <TouchableOpacity
-    style={{
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      marginRight: 20,
-    }}
-    onPress={(item) => setSelectedCategory(item.title)}
-  >
-    <Text style={{ fontSize: 16, fontWeight: "500", color: colors.purple }}>
-      {item.title}
-    </Text>
-  </TouchableOpacity>
-);
 
 const Item = (item, navigation) => (
   // Item container
@@ -91,10 +44,7 @@ const Item = (item, navigation) => (
         style={{ flex: 0.7 }}
         onPress={() => navigation.navigate("ItemDetail", { item: item })}
       >
-        {/* <Image
-                style={styles.itemImage}
-                source={require('./../../../assets/images/i1.jpg')}
-                /> */}
+        
         {item.images ? (
           <Image
             source={{ uri: item.images.filter((image) => !image == "")[0] }}
@@ -115,7 +65,8 @@ const Item = (item, navigation) => (
         <View
           style={{
             flex: 0.7,
-            justifyContent: "center",
+            // justifyContent:'flex-start',
+            justifyContent: "center", 
             alignItems: "flex-start",
             paddingLeft: 12,
           }}
@@ -150,11 +101,53 @@ const Item = (item, navigation) => (
   // </Animated.View>
 );
 
-export default function FoundItems({ navigation, route }) {
+export default function FoundItems({ navigation, route,dataaa }) {
+
+
   const STATUSBAR_HEIGHT = Platform.OS === "ios" ? 20 : StatusBarManager.HEIGHT;
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { items } = useItems();
+  const { items, categories } = useItems();
 
+  const isSelected = (category) => {
+    if (selectedCategory == category) {
+      return true;
+    } else return false;
+  };
+  const selectedItems = items.filter((item) => {
+    if (selectedCategory == "All") {
+      console.log("selected category is : ", selectedCategory);
+      return item.status == "lost";
+    } else return item.status == "lost" && item.category == selectedCategory;
+  });
+  const CategoriesList = (item) => (
+    <TouchableOpacity
+      style={{
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginRight: 20,
+        paddingHorizontal: 13,
+        backgroundColor: isSelected(item.title)
+          ? colors.yellow
+          : colors.lightbg,
+        height: 30,
+        borderRadius: 15,
+      }}
+      onPress={() => {
+        setSelectedCategory(item.title);
+        console.log("category selected : ", item);
+      }}
+    >
+      <Text style={{ fontSize: 16, fontWeight: "500", color: colors.purple }}>
+        {item.title}
+      </Text>
+    </TouchableOpacity>
+  );
+
+
+
+  // ________________________________________________ RETURN ________________________________________________
   return (
     // <ScrollView nestedScrollEnabled={true}>
     <View
@@ -178,7 +171,33 @@ export default function FoundItems({ navigation, route }) {
           onBackPress={() => navigation.pop()}
         />
       </View>
-     
+      {/* <View style={{flex:0.3 }}>
+            <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center'}} onPress={() => navigation.pop()}>
+                <Ionicons name="chevron-back" size={24} color={colors.yellow} />
+                <Text style={{color:colors.darkGrey}}>Home</Text>
+            </TouchableOpacity>
+        </View>
+
+
+        <View style={{flex:0.7}}>
+            <View style={{flex:1,flexDirection:'row',alignItems:'center',borderWidth:0.5,borderColor:colors.grey,
+            paddingVertical:8,paddingHorizontal:10,borderRadius:6,backgroundColor:colors.white,marginVertical:12}}>
+            
+                <View style={{flex:0.1}}>
+                    <Fontisto name="search" size={16} color='grey'/> 
+                </View>
+                <View style={{flex:0.8}}>
+                    <TextInput  placeholder="Find items" >
+                    </TextInput>
+                </View>
+                <View style={{flex:0.1}}>
+                    <TouchableOpacity>
+                    <Ionicons name="options-outline" size={20} color="grey" style={{transform: [{ rotate: '270deg' }]}} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+    
+        </View> */}
 
       {/* mid container for heading and categories */}
 
@@ -189,8 +208,7 @@ export default function FoundItems({ navigation, route }) {
           justifyContent: "space-between",
         }}
       >
-        <Text
-          style={{
+        <Text style={{
             fontSize: 20,
             fontWeight: "bold",
             color: colors.darkestBlue,
@@ -200,6 +218,7 @@ export default function FoundItems({ navigation, route }) {
           Lost Items
         </Text>
 
+        {/* Categories flatlist  */}
         <View
           style={{
             flex: 1,
@@ -210,7 +229,7 @@ export default function FoundItems({ navigation, route }) {
         >
           <SafeAreaView style={{ flex: 1 }}>
             <FlatList
-              data={DATA}
+              data={categories}
               horizontal
               keyExtractor={(item) => item.id}
               keyboardShouldPersistTaps="never"
@@ -230,21 +249,48 @@ export default function FoundItems({ navigation, route }) {
           marginBottom: 8,
         }}
       >
+        {/* Items Found flatlist using scroll view   */}
         <SafeAreaView style={{ flex: 1 }}>
-          <FlatList
-            data={items.filter((img) => {
-              return img.status == "lost";
-            })}
-            // horizontal
-            numColumns={2}
-            keyExtractor={(item) => item.id}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="never"
-            renderItem={({ item }) => Item(item, navigation)}
-            // snapToAlignment="start"
-            // decelerationRate={"normal"}
-            // snapToInterval={120}
-          />
+          {selectedItems.length !== 0 ? (
+            <FlatList
+              data={selectedItems}
+              // horizontal
+              numColumns={2}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="never"
+              renderItem={({ item }) => Item(item, navigation)}
+              // snapToAlignment="start"
+              // decelerationRate={"normal"}
+              // snapToInterval={120}
+            />
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <View style={styles.loadingContainer}>
+                {/* <Text>Loading ...</Text> */}
+                {/* <LottieView source={require=("./../../../assets/Animations/loader1.json")} autoPlay  loop style={styles.loadingAnimation}/> */}
+                <Text style={{fontSize:18,color:colors.darkestBlue}}>0 Items Found :(  </Text>
+              </View>
+
+              {/* <Image
+                style={{height:120,width:220}}
+                source={require("./../../../assets/images/0Items.png")}
+              /> */}
+            </View>
+          )}
+
+          {/* <ScrollView contentContainerStyle={{}} horizontal showsHorizontalScrollIndicator={false}>
+                {items.filter((item) => item.status === 'found').map((item) => (
+                  <FoundItemsCustomList item={item} navigation={navigation}/>
+
+                ))}
+              </ScrollView> */}
         </SafeAreaView>
       </View>
       {/* </KeyboardAwareScrollView> */}
@@ -254,22 +300,11 @@ export default function FoundItems({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 0.7,
-  //   // marginTop: StatusBar.currentHeight || 0,
-  // },
   item: {
     flex: 1,
     height: 220,
     width: 150,
-    // borderWidth:2,
-    // borderColor:'green'
     backgroundColor: colors.white,
-    // padding: 8,
-    //   marginVertical: 5,
-    //   marginRight:5,
-    //   marginRight: 20,
-    //   borderRadius:6,
   },
   itemImage: {
     height: "100%",
@@ -294,5 +329,19 @@ const styles = StyleSheet.create({
     padding: 6,
     borderBottomLeftRadius: 6,
     borderBottomRightRadius: 6,
+  },
+  loadingAnimation: {
+    width: "25%",
+    height: "20%",
+    alignSelf: "center",
+  },
+  loadingContainer: {
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

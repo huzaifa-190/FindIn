@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import {getFirestore,collection,getDoc,addDoc,onSnapshot,doc,deleteDoc,updateDoc,query,where} from 'firebase/firestore'
+import {getFirestore,collection,orderBy,getDoc,addDoc,onSnapshot,doc,deleteDoc,updateDoc,query,where} from 'firebase/firestore'
 
 
 
@@ -14,6 +14,20 @@ const fetchItems =  (collectionName,callback)=>{
       console.log('\n\n\n Items data inSide HOOK ==>',items)
       callback(items);
       console.log("\n\t\t Items being Set in hook")
+    })
+  }
+
+const fetchCategories =  (collectionName,callback)=>{
+    const db = getFirestore()
+    const snapShot = collection(db,collectionName)
+    const q = query(snapShot, orderBy('id', 'asc'))
+    onSnapshot(q,snapShot =>{
+        console.log('running snapshot ...')
+       const items =snapShot.docs.map(doc => ({...doc.data() }))
+      //  const items =snapShot.docs.data
+      console.log('\n\n\n Categories inSide HOOK ==>',items)
+      callback(items);
+      console.log("\n\t\t Categories  being Set in hook")
     })
   }
 
@@ -37,4 +51,4 @@ const fetchItems =  (collectionName,callback)=>{
 //   }
 //   setItem();
 
-export {fetchItems}
+export {fetchItems,fetchCategories}

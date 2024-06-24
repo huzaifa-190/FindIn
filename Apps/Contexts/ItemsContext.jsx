@@ -10,6 +10,7 @@ const ItemsContext = createContext();
 export const ItemsProvider = ({ children }) => {
   const { user } = useAuth();
   const [items, setItems] = useState(null);
+  const [categories,setCategories] = useState(null);
 
   // useEffect(() => {
   //   let unsubscribe;
@@ -26,7 +27,7 @@ export const ItemsProvider = ({ children }) => {
   // }, [user]);
 
   return (
-    <ItemsContext.Provider value={{ items ,setItems}}>
+    <ItemsContext.Provider value={{ items ,setItems,categories,setCategories}}>
       {children}
     </ItemsContext.Provider>
   );
